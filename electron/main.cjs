@@ -9,6 +9,7 @@ const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged
 
 const DLL_URL = 'https://raw.githubusercontent.com/ChrisDev3lops/launcher-redirectblah/refs/heads/main/Tellurium.dll'
 const DLL_FILENAME = 'GFSDK_Aftermath_Lib.x64.dll'
+const BACKEND_URL = 'http://127.0.0.1:3551'
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -33,7 +34,7 @@ function createWindow() {
       responseHeaders: {
         ...details.responseHeaders,
 'Content-Security-Policy': [
-  "default-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:* http://26.87.221.115:* https://fortnite-api.com https://fonts.googleapis.com https://fonts.gstatic.com data: blob:;"
+  "default-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:* http://127.0.0.1:3551 http://26.87.221.115:* https://fortnite-api.com https://fonts.googleapis.com https://fonts.gstatic.com data: blob:;"
 ]
       }
     })
@@ -166,7 +167,7 @@ function createWindow() {
         '-AUTH_PASSWORD=unused',
         '-AUTH_TYPE=exchangecode',
       ]
-      if (backendUrl) args.push(`-ironmp_BACKEND=${backendUrl}`)
+      args.push(`-ironmp_BACKEND=${backendUrl || BACKEND_URL}`)
 
       const env = { ...process.env }
       delete env['EPIC_GAMES_LAUNCHER_LOCATION']
