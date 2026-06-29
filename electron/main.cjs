@@ -8,7 +8,7 @@ const http = require('http')
 const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged
 
 const DLL_URL = 'https://raw.githubusercontent.com/ChrisDev3lops/launcher-redirectblah/refs/heads/main/Tellurium.dll'
-const DLL_FILENAME = 'Redirect.dll'
+const DLL_FILENAME = 'GFSDK_Aftermath_Lib.x64.dll'
 
 function createWindow() {
   const win = new BrowserWindow({
