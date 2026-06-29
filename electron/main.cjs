@@ -119,34 +119,49 @@ function createWindow() {
       return { success: false, error: 'Executable not found: ' + exePath }
     }
     try {
-      let dllPath = null
-      try {
-        const gameRoot = path.join(path.dirname(exePath), '..', '..', '..')
-        const dllDir = path.join(gameRoot, 'Engine', 'Binaries', 'ThirdParty', 'NVIDIA', 'NVaftermath', 'Win64')
-        fs.mkdirSync(dllDir, { recursive: true })
-        const dllDest = path.join(dllDir, DLL_FILENAME)
-        await new Promise((resolve, reject) => {
-          function download(rawUrl) {
-            const client = rawUrl.startsWith('https') ? https : http
-            client.get(rawUrl, (res) => {
-              if (res.statusCode === 301 || res.statusCode === 302 || res.statusCode === 307 || res.statusCode === 308) {
-                return download(res.headers.location)
-              }
-              if (res.statusCode !== 200) {
-                return reject(new Error(`HTTP ${res.statusCode}`))
-              }
-              const file = fs.createWriteStream(dllDest)
-              res.pipe(file)
-              file.on('finish', () => file.close(resolve))
-              file.on('error', (err) => { fs.unlink(dllDest, () => {}); reject(err) })
-            }).on('error', reject)
-          }
-          download(DLL_URL)
-        })
-        dllPath = dllDest
-      } catch (dlErr) {
-        console.error('DLL download failed:', dlErr)
+      // --- DLL setup (mirrors Aeris run_launch) ---
+      // exePath: <root>/FortniteGame/Binaries/Win64/FortniteClient-Win64-Shipping.exe
+      // gameRoot: 3 levels up → <root>/
+      const gameRoot = path.resolve(path.dirname(exePath), '..', '..', '..')
+      const dllDir  = path.join(gameRoot, 'Engine', 'Binaries', 'ThirdParty', 'NVIDIA', 'NVaftermath', 'Win64')
+      fs.mkdirSync(dllDir, { recursive: true })
+      const dllDest = path.join(dllDir, DLL_FILENAME)
+
+      // Delete existing DLL first (like Aeris remove_game_dll_sync)
+      if (fs.existsSync(dllDest)) {
+        let removed = false
+        for (let i = 0; i < 20 && !removed; i++) {
+          try { fs.unlinkSync(dllDest); removed = true }
+          catch { await new Promise(r => setTimeout(r, 100)) }
+        }
+        if (!removed) return { success: false, error: 'Could not remove existing DLL — is the game already running?' }
       }
+
+      // Download fresh DLL — hard fail if it doesn't work
+      await new Promise((resolve, reject) => {
+        function download(rawUrl) {
+          const client = rawUrl.startsWith('https') ? https : http
+          client.get(rawUrl, (res) => {
+            if (res.statusCode === 301 || res.statusCode === 302 || res.statusCode === 307 || res.statusCode === 308) {
+              return download(res.headers.location)
+            }
+            if (res.statusCode !== 200) {
+              return reject(new Error(`DLL download failed: HTTP ${res.statusCode}`))
+            }
+            const file = fs.createWriteStream(dllDest)
+            res.pipe(file)
+            file.on('finish', () => file.close(resolve))
+            file.on('error', (err) => { try { fs.unlinkSync(dllDest) } catch {} reject(err) })
+          }).on('error', reject)
+        }
+        download(DLL_URL)
+      })
+
+      if (!fs.existsSync(dllDest)) {
+        return { success: false, error: 'DLL not found after download' }
+      }
+
+      // Kill Epic processes
       try {
         spawn('taskkill', ['/F', '/IM', 'EpicGamesLauncher.exe'], { stdio: 'ignore' })
         spawn('taskkill', ['/F', '/IM', 'EpicWebHelper.exe'],     { stdio: 'ignore' })
@@ -172,8 +187,6 @@ function createWindow() {
       const env = { ...process.env }
       delete env['EPIC_GAMES_LAUNCHER_LOCATION']
       delete env['EPIC_DISPLAY_NAME']
-      if (dllPath && fs.existsSync(dllPath)) env.ironmp_DLL = dllPath
-
 
       const child = spawn(exePath, args, {
         detached: true,
