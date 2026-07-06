@@ -54,7 +54,7 @@ export default function SettingsPage() {
               <Row label="Application" value="ironmp Launcher" />
               <Row label="Version"     value="1.0.0" />
               <Row label="Build"       value="stable" />
-              <Row label="Electron"    value="32.x" />
+              <Row label="Tauri"       value="2.x" />
               <Row label="Account"     value={user?.email ?? '—'} />
               <Row label="User ID"     value={user?.id ?? '—'} />
             </div>

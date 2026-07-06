@@ -1,24 +1,15 @@
 import { X, Minus, Square } from 'lucide-react'
 import clsx from 'clsx'
+import { tauriAPI } from '../../lib/tauri'
 
 interface TitleBarProps {
   transparent?: boolean
 }
 
-declare global {
-  interface Window {
-    electronAPI?: {
-      minimize: () => void
-      maximize: () => void
-      close: () => void
-    }
-  }
-}
-
 export default function TitleBar({ transparent = false }: TitleBarProps) {
-  const minimize = () => window.electronAPI?.minimize()
-  const maximize = () => window.electronAPI?.maximize()
-  const close = () => window.electronAPI?.close()
+  const minimize = () => tauriAPI.minimize()
+  const maximize = () => tauriAPI.maximize()
+  const close = () => tauriAPI.close()
 
   return (
     <div

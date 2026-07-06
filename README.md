@@ -1,35 +1,22 @@
 # 💧 ironmp Launcher
 
-Desktop game launcher built with Electron + React + TypeScript + Tailwind CSS.
+Desktop game launcher built with Tauri + Rust + React + TypeScript + Vite + Tailwind CSS.
 
 ## Getting Started
 
 ### Install dependencies
 ```bash
-npm install
+bun install
 ```
 
-### Run in development (Vite + Electron)
-Open **two terminals**:
-
-**Terminal 1** — Start the Vite dev server:
+### Run in development
 ```bash
-npm run vite
-```
-
-**Terminal 2** — Start Electron (after Vite is running):
-```bash
-npm run electron
-```
-
-Or use concurrently (auto-waits for Vite):
-```bash
-npm run dev
+bun run tauri:dev
 ```
 
 ### Build for production
 ```bash
-npm run build
+bun run tauri:build
 ```
 
 ## Backend Connection

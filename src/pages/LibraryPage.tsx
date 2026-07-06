@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Plus, Trash2, Play, FolderOpen } from 'lucide-react'
+import { tauriAPI } from '../lib/tauri'
 
 interface Build {
   id: string
@@ -19,18 +20,6 @@ function saveBuilds(builds: Build[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(builds))
 }
 
-declare global {
-  interface Window {
-    electronAPI?: {
-      minimize: () => void
-      maximize: () => void
-      close: () => void
-      selectFortniteFolder: () => Promise<{ folder: string; exePath: string | null } | null>
-      launchGame: (opts: { exePath: string; dllPath?: string; backendUrl?: string }) => Promise<{ success: boolean; error?: string }>
-    }
-  }
-}
-
 export default function LibraryPage() {
   const [builds, setBuilds] = useState<Build[]>(loadBuilds)
   const [launching, setLaunching] = useState<string | null>(null)
@@ -40,7 +29,7 @@ export default function LibraryPage() {
 
   const handleAdd = async () => {
     setError('')
-    const result = await window.electronAPI?.selectFortniteFolder()
+    const result = await tauriAPI.selectFortniteFolder()
     if (!result) return
     if (!result.exePath) {
       setError('FortniteClient-Win64-Shipping.exe not found in the selected folder.')
@@ -57,7 +46,7 @@ export default function LibraryPage() {
   const handleLaunch = async (build: Build) => {
     setLaunching(build.id)
     setError('')
-    const res = await window.electronAPI?.launchGame({ exePath: build.exePath, dllPath: build.dllPath, backendUrl: build.backendUrl })
+    const res = await tauriAPI.launchGame({ exePath: build.exePath, dllPath: build.dllPath, backendUrl: build.backendUrl })
     setLaunching(null)
     if (res && !res.success) setError(res.error || 'Failed to launch.')
   }
