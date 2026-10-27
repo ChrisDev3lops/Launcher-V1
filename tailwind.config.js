@@ -1,4 +1,3 @@
-/** @type {import('tailwindcss').Config} */
 export default {
   content: [
     "./index.html",
@@ -7,7 +6,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        ironmp: {
+        accent: {
           50:  '#e0f7ff',
           100: '#b3ecff',
           200: '#66d9ff',
@@ -27,10 +26,10 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Sora', 'system-ui', 'sans-serif'],
       },
       backgroundImage: {
-        'ironmpgradient': 'linear-gradient(135deg, #001f29 0%, #003d52 50%, #0099cc 100%)',
+        'accent-gradient': 'linear-gradient(135deg, #001f29 0%, #003d52 50%, #0099cc 100%)',
         'card-gradient': 'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.8) 100%)',
       },
       animation: {

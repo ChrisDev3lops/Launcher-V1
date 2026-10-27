@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "ironmp",
+  "productName": "Launcher",
   "version": "1.0.0",
-  "identifier": "com.ironmp.launcher",
+  "identifier": "com.launcher.app",
   "build": {
     "frontendDist": "../dist",
     "devUrl": "http://localhost:5173",
@@ -10,9 +10,10 @@
     "beforeBuildCommand": "bun run build"
   },
   "app": {
+    "macOSPrivateApi": true,
     "windows": [
       {
-        "title": "ironmp",
+        "title": "Launcher",
         "width": 1280,
         "height": 800,
         "minWidth": 1024,
@@ -22,7 +23,7 @@
         "minimizable": true,
         "closable": true,
         "decorations": false,
-        "transparent": false,
+        "transparent": true,
         "center": true,
         "focus": true
       }

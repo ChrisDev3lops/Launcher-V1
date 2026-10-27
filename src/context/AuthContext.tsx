@@ -21,12 +21,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const savedUser = getUser()
     if (token && savedUser) {
       setUserState(savedUser)
-      // Skip backend validation for demo token
       if (token === 'demo-token') {
         setIsLoading(false)
         return
       }
-      // Validate token with backend
       authAPI.me()
         .then((res) => {
           setUserState(res.data.user)

@@ -169,7 +169,6 @@ async fn launch_game(args: LaunchGameArgs) -> Result<LaunchGameResult, String> {
     });
   }
 
-  // Kill Epic processes
   let _ = tokio::process::Command::new("taskkill")
     .args(["/F", "/IM", "EpicGamesLauncher.exe"])
     .stdout(Stdio::null())
@@ -209,7 +208,7 @@ async fn launch_game(args: LaunchGameArgs) -> Result<LaunchGameResult, String> {
   .env_remove("EPIC_DISPLAY_NAME");
 
   #[cfg(windows)]
-  cmd.creation_flags(0x00000008); // DETACHED_PROCESS
+  cmd.creation_flags(0x00000008);
 
   let _ = cmd.spawn().map_err(|e| e.to_string())?;
 

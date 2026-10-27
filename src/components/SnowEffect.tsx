@@ -17,8 +17,6 @@ export default function SnowEffect() {
       H = canvas.height = window.innerHeight
     }
     window.addEventListener('resize', onResize)
-
-    // Create snowflakes
     const flakes = Array.from({ length: 120 }, () => ({
       x: Math.random() * W,
       y: Math.random() * H,

@@ -10,25 +10,22 @@ export const api = axios.create({
   },
 })
 
-// Attach token to every request
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('water_token')
+  const token = localStorage.getItem('launcher_token')
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
   return config
 })
 
-// Handle 401 globally
 api.interceptors.response.use(
   (res) => res,
   (err) => {
     if (err.response?.status === 401) {
-      const token = localStorage.getItem('water_token')
-      // Don't clear demo sessions
+      const token = localStorage.getItem('launcher_token')
       if (token !== 'demo-token') {
-        localStorage.removeItem('water_token')
-        localStorage.removeItem('water_user')
+        localStorage.removeItem('launcher_token')
+        localStorage.removeItem('launcher_user')
         window.location.hash = '#/login'
       }
     }
@@ -36,7 +33,6 @@ api.interceptors.response.use(
   }
 )
 
-// ── Auth ──────────────────────────────────────────────
 export const authAPI = {
   login: (email: string, password: string) =>
     api.post('/auth/login', { email, password }),
@@ -51,27 +47,23 @@ export const authAPI = {
     api.get('/auth/me'),
 }
 
-// ── Games / Library ───────────────────────────────────
 export const gamesAPI = {
   getAll: () => api.get('/games'),
   getById: (id: string) => api.get(`/games/${id}`),
   getFeatured: () => api.get('/games/featured'),
 }
 
-// ── Shop ──────────────────────────────────────────────
 export const shopAPI = {
   getFeatured: () => api.get('/shop/featured'),
   getDaily: () => api.get('/shop/daily'),
   purchase: (itemId: string) => api.post(`/shop/purchase/${itemId}`),
 }
 
-// ── Leaderboard ───────────────────────────────────────
 export const leaderboardAPI = {
   getGlobal: () => api.get('/leaderboard/global'),
   getByGame: (gameId: string) => api.get(`/leaderboard/${gameId}`),
 }
 
-// ── User ──────────────────────────────────────────────
 export const userAPI = {
   getProfile: () => api.get('/user/profile'),
   updateProfile: (data: Record<string, unknown>) => api.patch('/user/profile', data),

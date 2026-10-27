@@ -12,7 +12,6 @@ export default function MainLayout() {
       className="w-full h-screen flex flex-col overflow-hidden relative"
       style={{ backgroundColor: theme.bg }}
     >
-      {/* Snow always on top of background, behind content */}
       <SnowEffect />
 
       <TitleBar />

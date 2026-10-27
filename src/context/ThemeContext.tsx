@@ -3,11 +3,12 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 export interface Theme {
   id: string
   name: string
-  bg: string       // CSS color for the main background
-  accent: string   // accent color
+  bg: string
+  accent: string
 }
 
 export const THEMES: Theme[] = [
+  { id: 'violetlime', name: 'Violet Lime', bg: '#1a0b2e', accent: '#a3e635' },
   { id: 'obsidian',  name: 'Obsidian',  bg: '#0f0f13', accent: '#00b4f0' },
   { id: 'ocean',     name: 'Ocean',     bg: '#001829', accent: '#00b4f0' },
   { id: 'midnight',  name: 'Midnight',  bg: '#000000', accent: '#6366f1' },
@@ -27,14 +28,14 @@ const ThemeContext = createContext<ThemeContextType | null>(null)
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
-    const saved = localStorage.getItem('water_theme')
+    const saved = localStorage.getItem('launcher_theme')
     return THEMES.find(t => t.id === saved) ?? THEMES[0]
   })
 
   useEffect(() => {
     document.documentElement.style.setProperty('--bg-main', theme.bg)
     document.documentElement.style.setProperty('--accent', theme.accent)
-    localStorage.setItem('water_theme', theme.id)
+    localStorage.setItem('launcher_theme', theme.id)
   }, [theme])
 
   const setThemeById = (id: string) => {

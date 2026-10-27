@@ -1,49 +1,28 @@
-import { X, Minus, Square } from 'lucide-react'
-import clsx from 'clsx'
+import { X, Minus } from 'lucide-react'
 import { tauriAPI } from '../../lib/tauri'
 
-interface TitleBarProps {
-  transparent?: boolean
-}
-
-export default function TitleBar({ transparent = false }: TitleBarProps) {
-  const minimize = () => tauriAPI.minimize()
-  const maximize = () => tauriAPI.maximize()
-  const close = () => tauriAPI.close()
-
+export default function TitleBar() {
   return (
     <div
-      className={clsx(
-        'flex items-center justify-between h-9 px-4 flex-shrink-0 select-none',
-        transparent ? 'bg-transparent' : 'bg-dark-200/80'
-      )}
-      style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
+      data-tauri-drag-region
+      className="flex items-center justify-between h-9 flex-shrink-0 select-none border-b border-white/[0.06]"
     >
-      {/* Drag region fills most of the bar */}
       <div className="flex-1" />
 
-      {/* Window controls */}
-      <div
-        className="flex items-center gap-1"
-        style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
-      >
+      <div className="flex items-center">
         <button
-          onClick={minimize}
-          className="w-7 h-7 rounded-md flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all"
+          onClick={() => tauriAPI.minimize()}
+          className="w-10 h-9 flex items-center justify-center transition-colors duration-150 hover:bg-white/5 cursor-pointer"
+          aria-label="Minimize"
         >
-          <Minus className="w-3 h-3" />
+          <Minus size={13} className="text-zinc-500 hover:text-zinc-300" strokeWidth={2} />
         </button>
         <button
-          onClick={maximize}
-          className="w-7 h-7 rounded-md flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all"
+          onClick={() => tauriAPI.close()}
+          className="w-10 h-9 flex items-center justify-center transition-colors duration-150 hover:bg-red-500/20 cursor-pointer"
+          aria-label="Close"
         >
-          <Square className="w-3 h-3" />
-        </button>
-        <button
-          onClick={close}
-          className="w-7 h-7 rounded-md flex items-center justify-center text-white/40 hover:text-white hover:bg-red-500 transition-all"
-        >
-          <X className="w-3 h-3" />
+          <X size={13} className="text-zinc-500 hover:text-red-400" strokeWidth={2} />
         </button>
       </div>
     </div>
